@@ -1,0 +1,62 @@
+/*
+Copyright (c) 2015 Shotgun Software Inc.
+
+CONFIDENTIAL AND PROPRIETARY
+
+This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
+Source Code License included in this distribution package. See LICENSE.
+By accessing, using, copying or modifying this work you indicate your
+agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
+not expressly granted therein are reserved by Shotgun Software Inc.
+*/
+
+/* Use open sans font across the app if core supports it */
+QWidget {
+    font-family: "Open Sans";
+    font-style: "Regular";
+}
+
+SGQPushButton
+{
+  border: none;
+  outline: none;
+  padding: 6px;
+  background-color: palette(button);
+}
+SGQPushButton:hover
+{
+  background-color: palette(light);
+}
+
+SGQToolButton
+{
+  border: none;
+  outline: none;
+  padding: 4px;
+}
+SGQToolButton:checked,
+SGQToolButton:hover
+{
+  background-color: palette(light);
+  border-radius: 4px;
+}
+SGQToolButton#refresh_btn {
+  padding-right: 18px;
+}
+SGQToolButton::menu-button {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  width: 16px;
+}
+SGQToolButton::menu-button:hover {
+  background-color: palette(midlight);
+}
+
+QFrame#content_filter_scroll_area {
+  border: none;
+  outline: none;
+}
+SGQFrame#filter_menu_group_hline {
+  color: palette(light);
+  margin: 2px;
+}
