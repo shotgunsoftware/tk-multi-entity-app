@@ -15,4 +15,12 @@ def show_dialog(app):
     from .dialog import PublishedFilesAppDialog
 
     app_title = app.get_setting("title_name")
-    return app.engine.show_dialog(app_title, app, PublishedFilesAppDialog)
+
+
+    from sgtk.platform.qt import QtGui, QtCore
+    QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+    try:
+        return app.engine.show_dialog(app_title, app, PublishedFilesAppDialog)
+    finally:
+        QtGui.QApplication.restoreOverrideCursor()
+
