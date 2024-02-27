@@ -9,15 +9,6 @@
 # not expressly granted therein are reserved by Autodesk, Inc.
 
 
-try:
-    import sys
-    sys.path.append("C:\\python_libs")
-    import ptvsd
-    ptvsd.enable_attach()
-    ptvsd.wait_for_attach()
-except:
-    pass
-
 from collections import namedtuple
 
 import sgtk
