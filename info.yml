@@ -45,6 +45,9 @@ configuration:
     published_file_fields:
         type: list
         default_value: []
+        allows_empty: True
+        values:
+            type: str
         description: "List of additional fields to include in Published File query. This will
                       include the Published file data for the given fields, which will allow
                       the filtering on this data."
