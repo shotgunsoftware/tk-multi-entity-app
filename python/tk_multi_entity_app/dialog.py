@@ -358,9 +358,10 @@ class PublishedFilesAppDialog(QtGui.QWidget):
 
         # Get entity query filters. None for now
         published_file_filters = []
+        published_file_fields = self.__bundle.get_setting("published_file_fields", [])
         
         # Load the material data 
-        self.__content_model.load(entity, entity_filters, fields, order, published_file_filters=published_file_filters)
+        self.__content_model.load(entity, entity_filters, fields, order, published_file_filters=published_file_filters, published_file_fields=published_file_fields)
 
     @wait_cursor
     def refresh(self):
