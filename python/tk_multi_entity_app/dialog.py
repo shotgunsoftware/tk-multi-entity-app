@@ -396,9 +396,10 @@ class PublishedFilesAppDialog(QtGui.QWidget):
 
             # NOTE none for now
             published_file_filters = []
+            published_file_fields = self.__bundle.get_setting("published_file_fields", [])
 
             # Load the entity data 
-            self.__content_model.load(entity, filters, fields, order, published_file_filters=published_file_filters)
+            self.__content_model.load(entity, filters, fields, order, published_file_filters=published_file_filters, published_file_fields=published_file_fields)
         finally:
             self.blockSignals(restore_state)
             self.__refreshing = False
