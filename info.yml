@@ -42,6 +42,13 @@ configuration:
         default_value_tk-flame:
             Shot: [load_batch, create_batch]
 
+    published_file_fields:
+        type: list
+        default_value: []
+        description: "List of additional fields to include in Published File query. This will
+                      include the Published file data for the given fields, which will allow
+                      the filtering on this data."
+
     entities:
         default_value:
             - caption: Project
