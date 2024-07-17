@@ -384,16 +384,6 @@ class PublishedFilesAppDialog(QtGui.QWidget):
             fields.extend(hierarchy)
             order = entity_data.get("order", [])
 
-            # Load the material libraries
-            material_libraries = self.__bundle.shotgun.find(
-                "AssetLibrary",
-                filters=[
-                    ["sg_type", "is", "Material"],
-                ],
-                fields=["id", "code", "project"],
-            )
-            material_libraries.insert(0, {"code": "All", "id": None})
-
             # NOTE none for now
             published_file_filters = []
             published_file_fields = self.__bundle.get_setting("published_file_fields", [])
