@@ -36,7 +36,7 @@ class PublishedFilesModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
     def __init__(self, bg_task_manager, parent=None):
         """Initialize"""
 
-        super(PublishedFilesModel, self).__init__(parent=parent)
+        super().__init__(parent)
 
         self.__bundle = sgtk.platform.current_bundle()
 
