@@ -25,10 +25,10 @@ configuration:
         description: Name to appear on the title of the UI Dialog.
 
     # hooks
-    hook_materials_ui_config:
+    hook_ui_config:
         type: hook
-        default_value: "{self}/materials_ui_config.py"
-        description: Specify a hook that, if desired, configures the Materials UI.
+        default_value: "{self}/ui_config.py"
+        description: Specify a hook that, if desired, configures the UI layout and data.
 
     actions_hook:
         type: hook

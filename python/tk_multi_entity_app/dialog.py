@@ -51,14 +51,14 @@ class PublishedFilesAppDialog(QtGui.QWidget):
     """The Entity App dialog."""
 
     # Settings keys for storing and restoring user prefs
-    VIEW_MODE_SETTING = "materials_view_mode"
-    LIST_SIZE_SCALE_VALUE = "materials_view_item_list_size_scale"
-    THUMBNAIL_SIZE_SCALE_VALUE = "materials_view_item_thumb_size_scale"
-    DETAILS_PANEL_VISIBILITY_SETTING = "materials_details_panel_visibility"
-    SPLITTER_STATE = "materials_splitter_state"
-    FILTER_MENU_STATE = "materials_filter_menu_state"
-    FILTER_MENU_DOCKED_SETTING = "materials_filter_menu_docked"
-    SETTINGS_WIDGET_GEOMETRY = "materials_geometry"
+    VIEW_MODE_SETTING = "app_view_mode"
+    LIST_SIZE_SCALE_VALUE = "app_view_item_list_size_scale"
+    THUMBNAIL_SIZE_SCALE_VALUE = "app_view_item_thumb_size_scale"
+    DETAILS_PANEL_VISIBILITY_SETTING = "app_details_panel_visibility"
+    SPLITTER_STATE = "app_splitter_state"
+    FILTER_MENU_STATE = "app_filter_menu_state"
+    FILTER_MENU_DOCKED_SETTING = "app_filter_menu_docked"
+    SETTINGS_WIDGET_GEOMETRY = "app_geometry"
     SETTINGS_ENTITY_DATA = "entity_data"
 
     (
@@ -114,9 +114,7 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         # -----------------------------------------------------
         # Restore setting required to set up widgets. The rest of the settings will be
 
-        entity = self._settings_manager.retrieve(
-            self.SETTINGS_ENTITY_DATA, None
-        )
+        entity = self._settings_manager.retrieve(self.SETTINGS_ENTITY_DATA, None)
         if entity:
             index = self.__ui.entity_combobox.findText(entity)
             self.__ui.entity_combobox.setCurrentIndex(index)
@@ -129,7 +127,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         # self.__ui.content_view.setLayoutMode(QtGui.QListView.Batched)
         # self.__ui.content_view.setBatchSize(25)
         self.__ui.content_view.setResizeMode(QtGui.QListView.Adjust)
-        self.__ui.content_view.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.__ui.content_view.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection
+        )
         self.__ui.content_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 
         self.__content_model = PublishedFilesModel(self._bg_task_manager, self)
@@ -142,7 +142,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         self.__ui.content_view.setModel(self.__content_proxy_model)
 
         self._content_view_overlay = ShotgunOverlayWidget(self.__ui.content_view)
-        self.__filter_panel_overlay = ShotgunOverlayWidget(self.__ui.content_filter_scroll_area)
+        self.__filter_panel_overlay = ShotgunOverlayWidget(
+            self.__ui.content_filter_scroll_area
+        )
 
         # Enable mouse tracking to allow the delegate to receive mouse events
         self.__ui.content_view.setMouseTracking(True)
@@ -155,11 +157,15 @@ class PublishedFilesAppDialog(QtGui.QWidget):
 
         # Filtering
         self._filter_menu = FilterMenu(
-            self, refresh_on_show=False, dock_widget=self.__ui.content_filter_scroll_area,
+            self,
+            refresh_on_show=False,
+            dock_widget=self.__ui.content_filter_scroll_area,
         )
-        self._filter_menu.set_filter_roles([
-            PublishedFilesModel.SG_DATA_ROLE,
-        ])
+        self._filter_menu.set_filter_roles(
+            [
+                PublishedFilesModel.SG_DATA_ROLE,
+            ]
+        )
         # self._filter_menu.set_accept_fields(
         #     [
         #         f"{PublishedFilesModel.SG_DATA_ROLE}.PublishedFile.published_file_type"
@@ -199,26 +205,34 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         self._details_overlay = ShotgunOverlayWidget(self.__ui.details_panel)
 
         # format the details main widget
-        materials_details_config = self.__bundle.execute_hook_method(
-            "hook_materials_ui_config", "main_file_history_details"
+        details_ui_config = self.__bundle.execute_hook_method(
+            "hook_ui_config", "main_file_history_details"
         )
         self.__ui.details_widget.set_formatting(
-            materials_details_config.get("header"),
-            materials_details_config.get("body"),
-            materials_details_config.get("thumbnail"),
+            details_ui_config.get("header"),
+            details_ui_config.get("body"),
+            details_ui_config.get("thumbnail"),
         )
 
-        self.__content_item_history_model = PublishedFilesHistoryModel(self._bg_task_manager, self)
+        self.__content_item_history_model = PublishedFilesHistoryModel(
+            self._bg_task_manager, self
+        )
 
         self.__content_history_proxy_model = QtGui.QSortFilterProxyModel(self)
-        self.__content_history_proxy_model.setSourceModel(self.__content_item_history_model)
+        self.__content_history_proxy_model.setSourceModel(
+            self.__content_item_history_model
+        )
 
         self.__content_history_proxy_model.setDynamicSortFilter(True)
-        self.__content_history_proxy_model.setSortRole(PublishedFilesHistoryModel.SORT_ROLE)
+        self.__content_history_proxy_model.setSortRole(
+            PublishedFilesHistoryModel.SORT_ROLE
+        )
         self.__content_history_proxy_model.sort(0, QtCore.Qt.DescendingOrder)
 
         self.__ui.content_item_history_view.setModel(self.__content_history_proxy_model)
-        self.__ui.content_item_history_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.__ui.content_item_history_view.setContextMenuPolicy(
+            QtCore.Qt.CustomContextMenu
+        )
 
         history_delegate = self.__create_history_delegate()
         self.__ui.content_item_history_view.setItemDelegate(history_delegate)
@@ -231,11 +245,17 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         # Connect signals
 
         # Model & Views
-        self.__content_model.modelAboutToBeReset.connect(self.__on_content_model_reset_begin)
+        self.__content_model.modelAboutToBeReset.connect(
+            self.__on_content_model_reset_begin
+        )
         self.__content_model.modelReset.connect(self.__on_content_model_reset_end)
-        self.__content_model.layoutChanged.connect(self.__on_content_model_layout_changed)
+        self.__content_model.layoutChanged.connect(
+            self.__on_content_model_layout_changed
+        )
         self.__content_model.dataChanged.connect(self.__on_content_model_item_changed)
-        self.__content_proxy_model.layoutChanged.connect(self.__update_content_view_overlay)
+        self.__content_proxy_model.layoutChanged.connect(
+            self.__update_content_view_overlay
+        )
 
         self.__ui.content_view.selectionModel().selectionChanged.connect(
             self.__on_content_selection_changed
@@ -257,14 +277,18 @@ class PublishedFilesAppDialog(QtGui.QWidget):
                 lambda checked=False, mode=i: self.__set_view_mode(mode)
             )
 
-        self.__ui.content_size_slider.valueChanged.connect(self.__on_content_size_slider_changed)
+        self.__ui.content_size_slider.valueChanged.connect(
+            self.__on_content_size_slider_changed
+        )
         self.__ui.refresh_button.clicked.connect(self.refresh)
-        self.__ui.entity_combobox.currentIndexChanged.connect(self.__on_material_library_query_changed)
+        self.__ui.entity_combobox.currentIndexChanged.connect(
+            self.__on_entity_combobox_changed
+        )
 
         # -----------------------------------------------------
         # Log metric for app usage
 
-        # self.__bundle._log_metric_viewed_app()
+        self.__bundle._log_metric_viewed_app()
 
     # ----------------------------------------------------------------------------------------
     # Properties
@@ -341,13 +365,13 @@ class PublishedFilesAppDialog(QtGui.QWidget):
     # Public methods
 
     @wait_cursor
-    def __on_material_library_query_changed(self, index):
-        """The Material Library filter changed. Reload the model."""
+    def __on_entity_combobox_changed(self, index):
+        """The entity type changed. Reload the model."""
 
         if self.__refreshing:
             return
 
-        # Get the entity data 
+        # Get the entity data
         entity_data = self.__ui.entity_combobox.currentData()
         entity = entity_data["entity_type"]
         entity_filters = entity_data.get("filters", [])
@@ -359,23 +383,30 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         # Get entity query filters. None for now
         published_file_filters = []
         published_file_fields = self.__bundle.get_setting("published_file_fields", [])
-        
-        # Load the material data 
-        self.__content_model.load(entity, entity_filters, fields, order, published_file_filters=published_file_filters, published_file_fields=published_file_fields)
+
+        # Load the data
+        self.__content_model.load(
+            entity,
+            entity_filters,
+            fields,
+            order,
+            published_file_filters=published_file_filters,
+            published_file_fields=published_file_fields,
+        )
 
     @wait_cursor
     def refresh(self):
-        """Reload the material data."""
+        """Reload the data."""
 
         if not self.__content_model:
             return
 
-        # Block UI signals while refreshing 
+        # Block UI signals while refreshing
         restore_state = self.blockSignals(True)
         self.__refreshing = True
 
         try:
-            # Get the entity data 
+            # Get the entity data
             entity_data = self.__ui.entity_combobox.currentData()
             entity = entity_data["entity_type"]
             filters = entity_data.get("filters", [])
@@ -386,10 +417,19 @@ class PublishedFilesAppDialog(QtGui.QWidget):
 
             # NOTE none for now
             published_file_filters = []
-            published_file_fields = self.__bundle.get_setting("published_file_fields", [])
+            published_file_fields = self.__bundle.get_setting(
+                "published_file_fields", []
+            )
 
-            # Load the entity data 
-            self.__content_model.load(entity, filters, fields, order, published_file_filters=published_file_filters, published_file_fields=published_file_fields)
+            # Load the entity data
+            self.__content_model.load(
+                entity,
+                filters,
+                fields,
+                order,
+                published_file_filters=published_file_filters,
+                published_file_fields=published_file_fields,
+            )
         finally:
             self.blockSignals(restore_state)
             self.__refreshing = False
@@ -403,19 +443,29 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         """
 
         self._settings_manager.store(
-            self.SETTINGS_WIDGET_GEOMETRY, self.saveGeometry(), pickle_setting=False,
+            self.SETTINGS_WIDGET_GEOMETRY,
+            self.saveGeometry(),
+            pickle_setting=False,
         )
         self._settings_manager.store(
-            self.SPLITTER_STATE, self.__ui.content_splitter.saveState(), pickle_setting=False,
+            self.SPLITTER_STATE,
+            self.__ui.content_splitter.saveState(),
+            pickle_setting=False,
         )
         self._settings_manager.store(
-            self.FILTER_MENU_STATE, self._filter_menu.save_state(),
+            self.FILTER_MENU_STATE,
+            self._filter_menu.save_state(),
         )
         self._settings_manager.store(
-            self.FILTER_MENU_DOCKED_SETTING, self._filter_menu.docked,
+            self.FILTER_MENU_DOCKED_SETTING,
+            self._filter_menu.docked,
         )
-        self._settings_manager.store(self.DETAILS_PANEL_VISIBILITY_SETTING, self.__ui.details_panel.isVisible())
-        self._settings_manager.store(self.SETTINGS_ENTITY_DATA, self.__ui.entity_combobox.currentText())
+        self._settings_manager.store(
+            self.DETAILS_PANEL_VISIBILITY_SETTING, self.__ui.details_panel.isVisible()
+        )
+        self._settings_manager.store(
+            self.SETTINGS_ENTITY_DATA, self.__ui.entity_combobox.currentText()
+        )
 
     def restore_state(self):
         """
@@ -459,7 +509,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
             }
         self._filter_menu.restore_state(menu_state)
 
-        menu_docked = self._settings_manager.retrieve(self.FILTER_MENU_DOCKED_SETTING, False)
+        menu_docked = self._settings_manager.retrieve(
+            self.FILTER_MENU_DOCKED_SETTING, False
+        )
         if menu_docked:
             self._filter_menu.dock_filters()
 
@@ -500,7 +552,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         entity_combobox = QtGui.QComboBox()
         top_toolbar_layout.addWidget(entity_combobox)
         # Spacer
-        spacer_item = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacer_item = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         top_toolbar_layout.addItem(spacer_item)
         # View mode buttons
         view_mode_hlayout = QtGui.QHBoxLayout()
@@ -515,7 +569,7 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         list_view_button.setIcon(SGQIcon.list_view_mode())
         list_view_button.setCheckable(True)
         view_mode_hlayout.addWidget(list_view_button)
-        # 
+        #
         top_toolbar_layout.addLayout(view_mode_hlayout)
         # Filtering
         filter_menu_button = FilterMenuButton(top_toolbar_widget)
@@ -530,7 +584,7 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         details_button.setCheckable(True)
         details_button.setAutoRaise(False)
         top_toolbar_layout.addWidget(details_button)
-        # 
+        #
         app_layout.addWidget(top_toolbar_widget)
 
         # Main content
@@ -540,7 +594,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         content_layout.setContentsMargins(0, 0, 0, 0)
         # content splitter
         content_splitter = QtGui.QSplitter(content_widget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(content_splitter.sizePolicy().hasHeightForWidth())
@@ -548,7 +604,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         content_splitter.setOrientation(QtCore.Qt.Horizontal)
         # filtering
         content_filter_widget = QtGui.QWidget()
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        )
         content_filter_widget.setSizePolicy(sizePolicy)
         # filter widget layout
         content_filter_layout = QtGui.QVBoxLayout(content_filter_widget)
@@ -557,19 +615,25 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         # filter scroll area
         content_filter_scroll_area = QtGui.QScrollArea(content_splitter)
         content_filter_scroll_area.setWidgetResizable(True)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        )
         content_filter_scroll_area.setSizePolicy(sizePolicy)
         content_filter_scroll_area.setWidget(content_filter_widget)
         # list view
         content_view = QtGui.QListView(content_splitter)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(content_view.sizePolicy().hasHeightForWidth())
         content_view.setSizePolicy(sizePolicy)
         # details
         details_panel = QtGui.QGroupBox(content_splitter)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(details_panel.sizePolicy().hasHeightForWidth())
@@ -581,7 +645,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         details_vlayout.setContentsMargins(0, 0, 0, 0)
         details_vlayout.setSpacing(0)
         details_widget = ShotgunFolderWidget(details_panel)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(details_widget.sizePolicy().hasHeightForWidth())
@@ -604,17 +670,22 @@ class PublishedFilesAppDialog(QtGui.QWidget):
 
         # slider
         content_size_slider = QtGui.QSlider(bottom_toolbar_widget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(content_size_slider.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            content_size_slider.sizePolicy().hasHeightForWidth()
+        )
         content_size_slider.setSizePolicy(sizePolicy)
         content_size_slider.setMinimumSize(QtCore.QSize(150, 0))
         content_size_slider.setMinimum(20)
         content_size_slider.setMaximum(300)
         content_size_slider.setOrientation(QtCore.Qt.Horizontal)
         # TODO move to style sheet .qss
-        content_size_slider.setStyleSheet(" QSlider::handle:horizontal {\n"
+        content_size_slider.setStyleSheet(
+            " QSlider::handle:horizontal {\n"
             # "    border: 1px solid palette(base);\n"
             # "     border-radius: 3px;\n"
             "     width: 8px;\n"
@@ -623,7 +694,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         )
         bottom_toolbar_layout.addWidget(content_size_slider)
         # spacer
-        bottom_spacer_item = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        bottom_spacer_item = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         bottom_toolbar_layout.addItem(bottom_spacer_item)
 
         app_layout.addWidget(bottom_toolbar_widget)
@@ -806,7 +879,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         context_menu = QtGui.QMenu(self)
 
         # build the actions
-        actions = self._action_manager.get_actions_for_publishes(items, LoaderActionManager.UI_AREA_MAIN)
+        actions = self._action_manager.get_actions_for_publishes(
+            items, LoaderActionManager.UI_AREA_MAIN
+        )
         if not actions:
             no_action = QtGui.QAction("No Actions")
             no_action.setEnabled(False)
@@ -943,7 +1018,6 @@ class PublishedFilesAppDialog(QtGui.QWidget):
             # There are results, hide the overlay.
             self._content_view_overlay.hide()
 
-
     # ----------------------------------------------------------------------------------------
     # UI/Widget callbacks
 
@@ -1007,7 +1081,9 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         selected_indexes = self.__ui.content_view.selectionModel().selectedIndexes()
         self.__setup_details_panel(selected_indexes)
 
-    def __on_content_model_item_changed(self, top_left_index, bottom_right_index, roles):
+    def __on_content_model_item_changed(
+        self, top_left_index, bottom_right_index, roles
+    ):
         """
         Slot triggered when an item in the content model has changed.
 
@@ -1073,7 +1149,6 @@ class PublishedFilesAppDialog(QtGui.QWidget):
         spacing = self.__ui.content_view.setSpacing(spacing)
 
         self.__ui.content_view.viewport().update()
-
 
     # ----------------------------------------------------------------------------------------
     # ViewItemDelegate action method callbacks item's action is clicked

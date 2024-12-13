@@ -25,7 +25,7 @@ ShotgunDataRetriever = shotgun_data.ShotgunDataRetriever
 
 
 class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
-    """Model for Materials."""
+    """Model for published file history."""
 
     # Additional data roles defined for the model
     _BASE_ROLE = QtCore.Qt.UserRole + 32
@@ -34,7 +34,6 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
         SORT_ROLE,
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
     ) = range(_BASE_ROLE, _BASE_ROLE + 3)
-
 
     def __init__(self, bg_task_manager, parent=None):
         """Initialize"""
@@ -68,9 +67,7 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
             "path",
             "image",
             "version_number",
-            # Material fields
             "entity",
-            "entity.CustomNonProjectEntity01.sg_type",
             # Version fields
             "version",
             # Task fields
@@ -79,11 +76,11 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
             "project",
         ]
         self.__order = [
-            {'field_name':'version_number', 'direction':'desc'},
+            {"field_name": "version_number", "direction": "desc"},
         ]
 
         # Internal model data
-        self.__material_item = []
+        self.__entity_item = []
         self.__model_data = []
         self.__pending_thumbnail_requests = {}
 
@@ -134,7 +131,7 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
 
         if role == PublishedFilesHistoryModel.VIEW_ITEM_TEXT_ROLE:
             return data.get("created_by", {}).get("name")
- 
+
         if role == PublishedFilesHistoryModel.VIEW_ITEM_SUBTITLE_ROLE:
             dt = data.get("updated_at")
             return self.__pretty_date(dt)
@@ -152,7 +149,6 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
         if role == QtCore.Qt.EditRole:
             self.__model_data[row] = data
 
-
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         """Override"""
 
@@ -164,24 +160,27 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
         self.__model_data = []
         self.__pending_thumbnail_requests = {}
 
-
     # -----------------------------------------------------------------------------------------
     # Public methods
 
-    def load(self, material_item):
-        """Load the history data for the given Material from ShotGrid."""
+    def load(self, entity_item):
+        """Load the history data for the given entity from ShotGrid."""
 
         self.beginResetModel()
         try:
-            self.__material_item = material_item
+            self.__entity_item = entity_item
             self.__model_data = self.__bundle.shotgun.find(
-                self.__material_item.get("type"),
+                self.__entity_item.get("type"),
                 # TODO allow customize this filter
                 filters=[
-                    ["entity", "is", self.__material_item.get("entity")],
-                    ["task", "is", self.__material_item.get("task")],
-                    ["name", "is", self.__material_item.get("name")],
-                    ["published_file_type", "is", self.__material_item.get("published_file_type")],
+                    ["entity", "is", self.__entity_item.get("entity")],
+                    ["task", "is", self.__entity_item.get("task")],
+                    ["name", "is", self.__entity_item.get("name")],
+                    [
+                        "published_file_type",
+                        "is",
+                        self.__entity_item.get("published_file_type"),
+                    ],
                 ],
                 fields=self.__fields,
                 order=self.__order,
@@ -239,7 +238,7 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
             thumbnail_path = data.get("thumb_path")
             item_data["thumbnail_path"] = thumbnail_path
             index = self.index(item_row, 0)
-            
+
             # Do not call set data as this will update the view each time
             # self.setData(index, item_data, QtCore.Qt.EditRole)
             self.__model_data[item_row]["thumbnail_path"] = thumbnail_path
@@ -271,7 +270,6 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
         """
 
         # TODO move to shared framework
-
 
         if dt is None:
             return "No Date"
