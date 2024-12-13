@@ -356,11 +356,12 @@ class PublishedFilesModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
             # on each single index update).
             thumbnail_path = data.get("thumb_path")
             item_data["thumbnail_path"] = thumbnail_path
-            index = self.index(item_row, 0)
 
             # Do not call set data as this will update the view each time
+            # index = self.index(item_row, 0)
             # self.setData(index, item_data, QtCore.Qt.EditRole)
-            self.__model_data[item_row]["thumbnail_path"] = thumbnail_path
+            if item_row >= 0 and item_row < len(self.__model_data):
+                self.__model_data[item_row]["thumbnail_path"] = thumbnail_path
 
             if not self.__pending_thumbnail_requests:
                 top_left = self.index(0, 0)
