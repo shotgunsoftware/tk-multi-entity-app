@@ -26,5 +26,23 @@ class PublishedFilesApp(sgtk.platform.Application):
         self.engine.register_command(
             f"{display_name}...",
             lambda: tk_multi_entity_app.show_dialog(self),
-            {"short_name": display_name.replace(" ", "_"),}
+            {
+                "short_name": display_name.replace(" ", "_"),
+            },
         )
+
+    def _log_metric_viewed_app(self):
+        """Module local metric logging helper method for the "Logged In" metric."""
+
+        try:
+            from sgtk.util.metrics import EventMetric
+
+            EventMetric.log(
+                EventMetric.GROUP_TOOLKIT,
+                "Opened Multi Published Files App",
+                log_once=False,
+                bundle=self,
+            )
+        except:
+            # Ignore all errors, e.g. using a core that does not support metrics.
+            pass

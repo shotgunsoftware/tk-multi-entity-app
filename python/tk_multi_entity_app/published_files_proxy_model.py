@@ -14,7 +14,6 @@ from .framework_qtwidgets import FilterItemProxyModel
 class PublishedFilesProxyModel(FilterItemProxyModel):
     """Proxy model for entities."""
 
-
     def __init__(self, *args, **kwargs):
         """Initialize."""
 
