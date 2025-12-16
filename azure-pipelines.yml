@@ -45,3 +45,4 @@ jobs:
     - name: tk-framework-qtwidgets
     - name: tk-framework-shotgunutils
     - name: tk-shell
+    has_unit_tests: false
