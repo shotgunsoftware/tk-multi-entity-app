@@ -18,13 +18,13 @@ resources:
       endpoint: shotgunsoftware
 
 # We want builds to trigger for 3 reasons:
-# - The master branch sees new commits
+# - The main branch sees new commits
 # - Each PR should get rebuilt when commits are added to it.
 # - When we tag something
 trigger:
   branches:
     include:
-    - master
+    - main
   tags:
     include:
     - v*
@@ -45,3 +45,4 @@ jobs:
     - name: tk-framework-qtwidgets
     - name: tk-framework-shotgunutils
     - name: tk-shell
+    has_unit_tests: false
