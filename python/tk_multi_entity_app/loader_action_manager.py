@@ -8,9 +8,9 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
+import functools
 import os
 import sys
-from functools import partial
 
 import sgtk
 from sgtk.platform.qt import QtCore, QtGui
@@ -101,7 +101,9 @@ class LoaderActionManager(ActionManager):
             ]
 
             # Bind all the action params to a single invocation of the _execute_hook.
-            handler = partial(self._execute_hook, qt_action=a, actions=actions)
+            handler = functools.partial(
+                self._execute_hook, qt_action=a, actions=actions
+            )
             a.triggered[()].connect(handler)
 
             a.setData(actions)
