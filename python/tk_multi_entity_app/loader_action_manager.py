@@ -101,10 +101,9 @@ class LoaderActionManager(ActionManager):
             ]
 
             # Bind all the action params to a single invocation of the _execute_hook.
-            handler = functools.partial(
-                self._execute_hook, qt_action=a, actions=actions
+            a.triggered[()].connect(
+                functools.partial(self._execute_hook, qt_action=a, actions=actions)
             )
-            a.triggered[()].connect(handler)
 
             a.setData(actions)
             qt_actions.append(a)
