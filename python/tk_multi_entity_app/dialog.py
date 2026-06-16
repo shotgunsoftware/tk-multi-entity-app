@@ -309,7 +309,7 @@ class PublishedFilesAppDialog(QtGui.QWidget):
             self.__update_on_show = False
             self.refresh()
 
-        super(PublishedFilesAppDialog, self).showEvent(event)
+        super().showEvent(event)
 
     def closeEvent(self, event):
         """
@@ -359,7 +359,7 @@ class PublishedFilesAppDialog(QtGui.QWidget):
             self._bg_task_manager.shut_down()
             self._bg_task_manager = None
 
-        super(PublishedFilesAppDialog, self).closeEvent(event)
+        super().closeEvent(event)
 
     # ----------------------------------------------------------------------------------------
     # Public methods

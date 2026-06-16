@@ -17,4 +17,4 @@ class PublishedFilesProxyModel(FilterItemProxyModel):
     def __init__(self, *args, **kwargs):
         """Initialize."""
 
-        super(PublishedFilesProxyModel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
