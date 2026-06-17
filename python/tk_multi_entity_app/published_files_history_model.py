@@ -13,7 +13,6 @@ from datetime import datetime
 from sgtk.platform.qt import QtCore, QtGui
 
 import sgtk
-from tank_vendor import six
 from tank_vendor.shotgun_api3 import sg_timezone
 
 from .framework_qtwidgets import ViewItemRolesMixin
@@ -274,7 +273,7 @@ class PublishedFilesHistoryModel(QtCore.QAbstractListModel, ViewItemRolesMixin):
         if dt is None:
             return "No Date"
 
-        if isinstance(dt, six.string_types):
+        if isinstance(dt, str):
             dt = datetime.strptime(dt, "%Y-%m-%d")
             dt.replace(tzinfo=sg_timezone.LocalTimezone())
 

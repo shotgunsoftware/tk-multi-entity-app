@@ -101,6 +101,7 @@ description: "Generic app to display Published File data."
 requires_shotgun_version:
 requires_core_version:
 requires_engine_version:
+minimum_python_version: "3.9"
 
 # the frameworks required to run this app
 frameworks:
